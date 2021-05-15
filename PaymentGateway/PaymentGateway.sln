@@ -4,6 +4,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGateway", "PaymentGa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGatewayTests", "PaymentGatewayTests\PaymentGatewayTests.csproj", "{88D65BAC-20E4-4BB8-B543-1C7F366B2659}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0370E6F-6846-4803-A082-3C896C034DC8}"
+ProjectSection(SolutionItems) = preProject
+	InitialiseDB\001-create-users.sql = InitialiseDB\001-create-users.sql
+	InitialiseDB\002-create-tables.sql = InitialiseDB\002-create-tables.sql
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -11,6 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using PaymentGateway.Configurations;
+using PaymentGateway.Repository;
+using PaymentGateway.Services;
+using PaymentGateway.SimulatedBank;
 
 namespace PaymentGateway
 {
@@ -31,6 +35,13 @@ namespace PaymentGateway
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "PaymentGateway", Version = "v1"});
             });
+
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<ISimulatedBankService, SimulatedBankService>();
+
+            services.Configure<MySqlConfig>(Configuration.GetSection("MySqlConfig"));
+            services.AddOptions();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

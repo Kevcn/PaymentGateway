@@ -1,14 +1,12 @@
-﻿namespace PaymentGateway.Models
+﻿using System;
+
+namespace PaymentGateway.Models
 {
     public class TransactionDetails
     {
-        public long ID { get; set; }
-        public TransactionStatus transactionStatus { get; set; }
-    }
-
-    public enum TransactionStatus
-    {
-        Succeed,
-        Fail
+        public long TransactionID { get; set; }
+        public bool Success { get; set; }
+        public int paymentDetailsID { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

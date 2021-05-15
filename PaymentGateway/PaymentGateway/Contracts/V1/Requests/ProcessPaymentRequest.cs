@@ -1,6 +1,6 @@
-﻿namespace PaymentGateway.Models
+﻿namespace PaymentGateway.Contracts.V1.Requests
 {
-    public class CardDetails
+    public class ProcessPaymentRequest
     {
         public string CardNumber { get; set; }
         public int ExpiryMonth { get; set; }
