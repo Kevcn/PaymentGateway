@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace PaymentGateway.Models
+namespace PaymentGateway.Repository.DTO
 {
-    public class TransactionDetails
+    public class TransactionDetailsDTO
     {
         public long TransactionID { get; set; }
         public bool Success { get; set; }
-        public int paymentDetailsID { get; set; }
+        public int PaymentDetailsID { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

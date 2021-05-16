@@ -2,13 +2,19 @@
 {
     public class SimulatedBankResponse
     {
-        public long TransactionID { get; set; }
-        public TransactionStatus Status { get; set; }
+        public SimulatedBankResponse(long transactionId, TransactionStatus status)
+        {
+            TransactionID = transactionId;
+            Status = status;
+        }
+        
+        public long TransactionID { get; }
+        public TransactionStatus Status { get; }
     }
 
     public enum TransactionStatus
     {
-        Succeed,
+        Success,
         Fail
     }
 }

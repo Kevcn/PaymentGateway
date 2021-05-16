@@ -4,7 +4,7 @@ using Dapper;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
 using PaymentGateway.Configurations;
-using PaymentGateway.Models;
+using PaymentGateway.Repository.DTO;
 
 namespace PaymentGateway.Repository
 {
@@ -17,27 +17,27 @@ namespace PaymentGateway.Repository
             _mySqlConfig = mySqlConfig.Value;
         }
         
-        public async Task<int> SavePaymentDetails(PaymentDetails paymentDetails)
+        public async Task<int> SavePaymentDetails(PaymentDetailsDTO paymentDetails)
         {
             const string InsertPaymentDetailsQuery = @"
-            USE payment_gateway;
-            INSERT INTO payment_details (
-                CardNumber, 
-                ExpiryMonth, 
-                ExpiryDate, 
-                CardHolderName, 
-                Amount, 
-                Currency, 
-                CVV) 
-            VALUES (
-                @CardNumber, 
-                @ExpiryMonth, 
-                @ExpiryDate, 
-                @CardHolderName, 
-                @Amount, 
-                @Currency, 
-                @CVV);
-            SELECT LAST_INSERT_ID()";
+                USE payment_gateway;
+                INSERT INTO payment_details (
+                    CardNumber, 
+                    ExpiryMonth, 
+                    ExpiryDate, 
+                    CardHolderName, 
+                    Amount, 
+                    Currency, 
+                    CVV) 
+                VALUES (
+                    @CardNumber, 
+                    @ExpiryMonth, 
+                    @ExpiryDate, 
+                    @CardHolderName, 
+                    @Amount, 
+                    @Currency, 
+                    @CVV);
+                SELECT LAST_INSERT_ID()";
             
             try
             {

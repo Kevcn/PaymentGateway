@@ -1,7 +1,10 @@
-﻿namespace PaymentGateway.Repository
+﻿using System.Threading.Tasks;
+using PaymentGateway.Repository.DTO;
+
+namespace PaymentGateway.Repository
 {
-    public class ITransactionRepository
+    public interface ITransactionRepository
     {
-        
+        Task<bool> SaveTransactionDetails(TransactionDetailsDTO transactionDetails);
     }
 }

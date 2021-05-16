@@ -2,6 +2,13 @@
 {
     public class FailedResponse
     {
-        public string Status { get; set; }
+        public FailedResponse(string status, string errorMessage)
+        {
+            Status = status;
+            ErrorMessage = errorMessage;
+        }
+        
+        public string Status { get; }
+        public string ErrorMessage { get; }
     }
 }

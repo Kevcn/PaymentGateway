@@ -37,11 +37,14 @@ namespace PaymentGateway
             });
 
             services.AddScoped<IPaymentService, PaymentService>();
-            services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<ISimulatedBankService, SimulatedBankService>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             services.Configure<MySqlConfig>(Configuration.GetSection("MySqlConfig"));
             services.AddOptions();
+
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,6 +1,6 @@
-﻿namespace PaymentGateway.Models
+﻿namespace PaymentGateway.Repository.DTO
 {
-    public class PaymentDetails
+    public class PaymentDetailsDTO
     {
         public string CardNumber { get; set; }
         public int ExpiryMonth { get; set; }

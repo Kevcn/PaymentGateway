@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using PaymentGateway.Models;
+using PaymentGateway.Domain;
 
 namespace PaymentGateway.Services
 {
     public interface IPaymentService
     {
-        Task<bool> ProcessPayment(PaymentDetails paymentDetails);
+        Task<ProcessPaymentResult> ProcessPayment(PaymentDetails paymentDetails);
     }
 }

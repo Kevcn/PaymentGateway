@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using PaymentGateway.Contracts;
-using PaymentGateway.Models;
+using PaymentGateway.Domain;
 
 namespace PaymentGateway.SimulatedBank
 {

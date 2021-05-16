@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Contracts.V1.Requests;
-using PaymentGateway.Models;
+using PaymentGateway.Contracts.V1.Responses;
+using PaymentGateway.Domain;
 using PaymentGateway.Services;
 
 namespace PaymentGateway.Controllers
@@ -9,36 +11,29 @@ namespace PaymentGateway.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IMapper _mapper;
 
-       public PaymentController(IPaymentService paymentService)
+       public PaymentController(IPaymentService paymentService, IMapper mapper)
        {
            _paymentService = paymentService;
+           _mapper = mapper;
        }
 
        [HttpPost("Process")]
        public async Task<IActionResult> Process([FromBody] ProcessPaymentRequest processPaymentRequest)
        {
            // TODO: Validation
-           
-           var paymentDetails = new PaymentDetails
-           {
-               CardNumber = processPaymentRequest.CardNumber,
-               ExpiryMonth = processPaymentRequest.ExpiryMonth,
-               ExpiryDate = processPaymentRequest.ExpiryDate,
-               CardHolderName = processPaymentRequest.CardHolderName,
-               Amount = processPaymentRequest.Amount,
-               Currency = processPaymentRequest.Currency,
-               CVV = processPaymentRequest.CVV
-           };
+
+           var paymentDetails = _mapper.Map<PaymentDetails>(processPaymentRequest);
 
            var result = await _paymentService.ProcessPayment(paymentDetails);
 
-           if (!result)
+           if (!result.Success)
            {
-               return BadRequest(new {error = $"Failed to save payment details for card number {paymentDetails.CardNumber}"});
+               return BadRequest(new FailedResponse("Failed", $"Failed to process payment for card number {paymentDetails.CardNumber}"));
            }
 
-           return Ok();
+           return Ok(_mapper.Map<SuccessResponse>(result));
        }
     }
 }
