@@ -41,9 +41,10 @@ namespace PaymentGateway
             });
 
             services.AddScoped<IPaymentService, PaymentService>();
-            services.AddScoped<ISimulatedBankService, SimulatedBankService>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<ISimulatedBankService, SimulatedBankService>();
 
             services.Configure<MySqlConfig>(Configuration.GetSection("MySqlConfig"));
             services.AddOptions();

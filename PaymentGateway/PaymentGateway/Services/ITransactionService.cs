@@ -1,7 +1,10 @@
-﻿namespace PaymentGateway.Services
+﻿using System.Threading.Tasks;
+using PaymentGateway.Domain;
+
+namespace PaymentGateway.Services
 {
-    public class ITransactionService
+    public interface ITransactionService
     {
-        
+        Task<bool> SaveTransactionDetails(TransactionDetails transactionDetails);
     }
 }

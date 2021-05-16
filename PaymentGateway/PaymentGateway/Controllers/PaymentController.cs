@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Contracts.V1.Requests;
 using PaymentGateway.Contracts.V1.Responses;
@@ -28,8 +29,7 @@ namespace PaymentGateway.Controllers
 
            if (!result.Success)
            {
-               //TODO: Whats the correct status code here?
-               return BadRequest(new ErrorResponse(new ErrorModel
+               return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse(new ErrorModel
                {
                    FieldName = "-",
                    Message = $"Failed to process payment for card number {paymentDetails.CardNumber}"

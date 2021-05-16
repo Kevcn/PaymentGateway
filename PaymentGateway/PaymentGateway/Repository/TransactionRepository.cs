@@ -46,16 +46,16 @@ namespace PaymentGateway.Repository
 
                 return inserted > 0;
             }
-            catch (MySqlException exception)
+            catch (MySqlException e)
             {
                 // TODO: log expection
-                Console.WriteLine(exception);
+                Console.WriteLine(e);
                 throw;
             }
-            catch (Exception exception)
+            catch (Exception e)
             {
                 // TODO: log expection
-                Console.WriteLine(exception);
+                Console.WriteLine(e);
                 throw;
             }
             
