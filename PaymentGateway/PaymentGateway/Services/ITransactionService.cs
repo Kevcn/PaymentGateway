@@ -6,5 +6,7 @@ namespace PaymentGateway.Services
     public interface ITransactionService
     {
         Task<bool> SaveTransactionDetails(TransactionDetails transactionDetails);
+
+        Task<TransactionHistory> GetTransactionHistory(long transactionID);
     }
 }

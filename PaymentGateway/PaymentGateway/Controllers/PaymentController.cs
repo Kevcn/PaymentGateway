@@ -20,8 +20,8 @@ namespace PaymentGateway.Controllers
            _mapper = mapper;
        }
 
-       [HttpPost("Process")]
-       public async Task<IActionResult> Process([FromBody] ProcessPaymentRequest processPaymentRequest)
+       [HttpPost("ProcessPayment")]
+       public async Task<IActionResult> ProcessPayment([FromBody] ProcessPaymentRequest processPaymentRequest)
        {
            var paymentDetails = _mapper.Map<PaymentDetails>(processPaymentRequest);
 
