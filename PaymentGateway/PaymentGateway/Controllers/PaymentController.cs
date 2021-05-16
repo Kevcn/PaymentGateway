@@ -22,15 +22,18 @@ namespace PaymentGateway.Controllers
        [HttpPost("Process")]
        public async Task<IActionResult> Process([FromBody] ProcessPaymentRequest processPaymentRequest)
        {
-           // TODO: Validation
-
            var paymentDetails = _mapper.Map<PaymentDetails>(processPaymentRequest);
 
            var result = await _paymentService.ProcessPayment(paymentDetails);
 
            if (!result.Success)
            {
-               return BadRequest(new FailedResponse("Failed", $"Failed to process payment for card number {paymentDetails.CardNumber}"));
+               //TODO: Whats the correct status code here?
+               return BadRequest(new ErrorResponse(new ErrorModel
+               {
+                   FieldName = "-",
+                   Message = $"Failed to process payment for card number {paymentDetails.CardNumber}"
+               }));
            }
 
            return Ok(_mapper.Map<SuccessResponse>(result));
