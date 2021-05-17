@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Services;
 
 namespace PaymentGateway.Controllers
@@ -16,15 +17,17 @@ namespace PaymentGateway.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetTransaction")]
+        [HttpGet("GetTransaction/{transactionID}")]
         public async Task<IActionResult> GetTransaction([FromRoute] long transactionID)
         {
-            // var result = await _transactionService.
+            var transactionHistory = await _transactionService.GetTransactionHistoryById(transactionID);
 
-            return Accepted();
+            if (transactionHistory == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(_mapper.Map<TransactionHistoryResponse>(transactionHistory));
         }
-        
-        
-        
     }
 }

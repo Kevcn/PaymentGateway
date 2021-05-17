@@ -11,6 +11,8 @@ namespace PaymentGateway.Configurations.Mappings
             CreateMap<ProcessPaymentResult, SuccessResponse>()
                 .ForMember(des => des.Status, opt 
                     => opt.MapFrom(src => src.Success ? "Success" : "Failed"));
+
+            CreateMap<TransactionHistory, TransactionHistoryResponse>();
         }
     }
 }

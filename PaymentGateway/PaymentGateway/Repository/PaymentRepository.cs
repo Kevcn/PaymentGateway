@@ -58,13 +58,11 @@ namespace PaymentGateway.Repository
             }
             catch (MySqlException e)
             {
-                // TODO: log expection
                 Console.WriteLine(e);
                 throw;
             }
             catch (Exception e)
             {
-                // TODO: log expection
                 Console.WriteLine(e);
                 throw;
             }

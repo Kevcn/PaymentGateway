@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using PaymentGateway.Configurations;
 using PaymentGateway.Configurations.Filters;
 using PaymentGateway.Configurations.Validations;
+using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Repository;
 using PaymentGateway.Services;
 using PaymentGateway.SimulatedBank;
@@ -61,6 +65,30 @@ namespace PaymentGateway
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PaymentGateway v1"));
+                
+                app.UseExceptionHandler(error =>
+                {
+                    error.Run(async context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        context.Response.ContentType = "application/json";
+
+                        var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+
+                        if (contextFeature != null)
+                        {
+                            await context.Response.WriteAsync(new ErrorDetails
+                            {
+                                StatusCode = context.Response.StatusCode,
+                                Message = "Internal Server Error"
+                            }.ToString());
+                        }
+                    });
+                });
+            }
+            else
+            {
+                
             }
 
             app.UseHttpsRedirection();

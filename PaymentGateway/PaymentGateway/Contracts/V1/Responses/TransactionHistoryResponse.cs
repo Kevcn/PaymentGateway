@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace PaymentGateway.Domain
+namespace PaymentGateway.Contracts.V1.Responses
 {
-    public class TransactionHistory
+    public class TransactionHistoryResponse
     {
         public string CardNumber { get; set; }
         public string CardHolderName { get; set; }

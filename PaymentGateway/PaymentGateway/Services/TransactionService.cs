@@ -21,5 +21,24 @@ namespace PaymentGateway.Services
         {
             return await _transactionRepository.SaveTransactionDetails(_mapper.Map<TransactionDetailsDTO>(transactionDetails));
         }
+
+        public async Task<TransactionHistory> GetTransactionHistoryById(long transactionID)
+        {
+            var transactionHistory = await _transactionRepository.GetTransactionHistoryById(transactionID);
+
+            if (transactionHistory == null)
+            {
+                return null;
+            }
+            
+            MaskCardDetails(transactionHistory);
+            
+            return transactionHistory;
+        }
+
+        private void MaskCardDetails(TransactionHistory transactionHistory)
+        {
+            transactionHistory.CardNumber = transactionHistory.CardNumber.Remove(5, 6).Insert(5, "******");
+        }
     }
 }

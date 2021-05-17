@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace PaymentGateway.Domain
+namespace PaymentGateway.Repository.DTO
 {
-    public class TransactionHistory
+    public class TransactionHistoryDTO
     {
         public string CardNumber { get; set; }
         public string CardHolderName { get; set; }

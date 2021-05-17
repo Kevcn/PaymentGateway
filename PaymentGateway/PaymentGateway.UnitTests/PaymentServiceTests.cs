@@ -35,7 +35,7 @@ namespace PaymentGateway.UnitTests
         }
         
         [Fact]
-        public async Task ProcessPayment_ShouldReturnSuccessResult_WhenAllOperationsAreSuccessful()
+        public async Task ProcessPayment_ShouldReturnSuccessResult_WhenBankReturnsSuccessResponse()
         {
             const long ExpectedTransactionID = 9999;
             

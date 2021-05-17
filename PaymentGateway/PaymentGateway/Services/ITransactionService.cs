@@ -7,6 +7,6 @@ namespace PaymentGateway.Services
     {
         Task<bool> SaveTransactionDetails(TransactionDetails transactionDetails);
 
-        Task<TransactionHistory> GetTransactionHistory(long transactionID);
+        Task<TransactionHistory> GetTransactionHistoryById(long transactionID);
     }
 }
