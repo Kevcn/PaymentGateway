@@ -61,7 +61,6 @@ namespace PaymentGateway.Repository
                 Console.WriteLine(e);
                 throw;
             }
-            
         }
 
         public async Task<TransactionHistory> GetTransactionHistoryById(long transactionID)

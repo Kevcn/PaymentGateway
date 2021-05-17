@@ -9,11 +9,13 @@ namespace PaymentGateway.Services
     public class TransactionService : ITransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
+        private readonly ICardService _cardService;
         private readonly IMapper _mapper;
 
-        public TransactionService(ITransactionRepository transactionRepository, IMapper mapper)
+        public TransactionService(ITransactionRepository transactionRepository, ICardService cardService, IMapper mapper)
         {
             _transactionRepository = transactionRepository;
+            _cardService = cardService;
             _mapper = mapper;
         }
         
@@ -30,15 +32,10 @@ namespace PaymentGateway.Services
             {
                 return null;
             }
-            
-            MaskCardDetails(transactionHistory);
+
+            transactionHistory.CardNumber = _cardService.MaskCardNumber(transactionHistory.CardNumber);
             
             return transactionHistory;
-        }
-
-        private void MaskCardDetails(TransactionHistory transactionHistory)
-        {
-            transactionHistory.CardNumber = transactionHistory.CardNumber.Remove(5, 6).Insert(5, "******");
         }
     }
 }

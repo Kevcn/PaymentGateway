@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using PaymentGateway.Contracts;
 using PaymentGateway.Domain;
@@ -33,11 +32,6 @@ namespace PaymentGateway.Services
             var paymentDetailsID = await _paymentRepository.SavePaymentDetails(_mapper.Map<PaymentDetailsDTO>(paymentDetails));
 
             var bankResponse = await _simulatedBankService.GetBankResponse(paymentDetails);
-
-            // if (bankResponse.Status == TransactionStatus.Fail)
-            // {
-            //     return ProcessPaymentResult.Failed;
-            // }
         
             var transactionDetails = new TransactionDetails(
                 bankResponse.TransactionID,
@@ -45,11 +39,9 @@ namespace PaymentGateway.Services
                 paymentDetailsID
             );
 
-            var transactionSaved = await _transactionService.SaveTransactionDetails(transactionDetails);
-        
-            return transactionSaved 
-                ? new ProcessPaymentResult(transactionDetails.Success, transactionDetails.TransactionID)
-                : ProcessPaymentResult.Failed;
+            await _transactionService.SaveTransactionDetails(transactionDetails);
+
+            return new ProcessPaymentResult(transactionDetails.Success, transactionDetails.TransactionID);
         }
     }
 }

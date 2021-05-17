@@ -26,14 +26,11 @@ namespace PaymentGateway.Controllers
            var paymentDetails = _mapper.Map<PaymentDetails>(processPaymentRequest);
 
            var result = await _paymentService.ProcessPayment(paymentDetails);
-
+           
            if (!result.Success)
            {
-               return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse(new ErrorModel
-               {
-                   FieldName = "-",
-                   Message = $"Failed to process payment for card number {paymentDetails.CardNumber}"
-               }));
+               return StatusCode(StatusCodes.Status500InternalServerError, new FailedResponse
+               ("Failed", result.TransactionID, $"Failed to process payment for card {paymentDetails.CardNumber}"));
            }
 
            return Ok(_mapper.Map<SuccessResponse>(result));

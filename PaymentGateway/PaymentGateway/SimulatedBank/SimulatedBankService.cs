@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using PaymentGateway.Contracts;
 using PaymentGateway.Domain;
 
@@ -8,9 +9,11 @@ namespace PaymentGateway.SimulatedBank
     {
         public async Task<SimulatedBankResponse> GetBankResponse(PaymentDetails paymentDetails)
         {
-            // Simulating bank response
+            // Fake bank response
+
+            Random random = new Random();
             
-            var response = new SimulatedBankResponse((long)paymentDetails.Amount + 1, TransactionStatus.Success);
+            var response = new SimulatedBankResponse(random.Next(), TransactionStatus.Success);
             
             return await Task.FromResult(response);
         }

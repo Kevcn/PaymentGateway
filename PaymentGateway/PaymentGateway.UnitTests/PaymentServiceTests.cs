@@ -58,10 +58,6 @@ namespace PaymentGateway.UnitTests
                 .ReturnsAsync(true);
 
             var actual = await _paymentService.ProcessPayment(paymentDetails);
-            
-            _mockPaymentRepository.Verify(x => x.SavePaymentDetails(It.IsAny<PaymentDetailsDTO>()), Times.Once);
-            _mockSimulatedBankService.Verify(x => x.GetBankResponse(paymentDetails), Times.Once);
-            _mockTransactionService.Verify(x => x.SaveTransactionDetails(It.IsAny<TransactionDetails>()), Times.Once);
 
             Assert.True(actual.Success);
             Assert.Equal(ExpectedTransactionID, actual.TransactionID);
@@ -87,58 +83,6 @@ namespace PaymentGateway.UnitTests
             _mockTransactionService
                 .Setup(x => x.SaveTransactionDetails(It.IsAny<TransactionDetails>()))
                 .ReturnsAsync(true);
-
-            var actual = await _paymentService.ProcessPayment(paymentDetails);
-            
-            Assert.False(actual.Success);
-        }
-
-        [Fact]
-        public async Task ProcessPayment_ShouldReturnFailedResult_WhenSavePaymentDetailsOperationThrowsException()
-        {
-            var paymentDetails = new PaymentDetails
-            {
-                CardNumber = "1234123412341234",
-                ExpiryMonth = 5,
-                ExpiryDate = 23,
-                CardHolderName = "Y LI",
-                Amount = 18.99M,
-                Currency = "GBP",
-                CVV = "111"
-            };
-            
-            _mockPaymentRepository.Setup(x => x.SavePaymentDetails(It.IsAny<PaymentDetailsDTO>())).ThrowsAsync(new Exception());
-            _mockSimulatedBankService.Setup(x => x.GetBankResponse(paymentDetails))
-                .ReturnsAsync(new SimulatedBankResponse(0, TransactionStatus.Fail));
-            _mockTransactionService
-                .Setup(x => x.SaveTransactionDetails(It.IsAny<TransactionDetails>()))
-                .ReturnsAsync(true);
-
-            var actual = await _paymentService.ProcessPayment(paymentDetails);
-            
-            Assert.False(actual.Success);
-        }
-        
-        [Fact]
-        public async Task ProcessPayment_ShouldReturnFailedResult_WhenSaveTransactionDetailsOperationThrowsException()
-        {
-            var paymentDetails = new PaymentDetails
-            {
-                CardNumber = "1234123412341234",
-                ExpiryMonth = 5,
-                ExpiryDate = 23,
-                CardHolderName = "Y LI",
-                Amount = 18.99M,
-                Currency = "GBP",
-                CVV = "111"
-            };
-            
-            _mockPaymentRepository.Setup(x => x.SavePaymentDetails(It.IsAny<PaymentDetailsDTO>())).ReturnsAsync(123);
-            _mockSimulatedBankService.Setup(x => x.GetBankResponse(paymentDetails))
-                .ReturnsAsync(new SimulatedBankResponse(0, TransactionStatus.Fail));
-            _mockTransactionService
-                .Setup(x => x.SaveTransactionDetails(It.IsAny<TransactionDetails>()))
-                .ThrowsAsync(new Exception());
 
             var actual = await _paymentService.ProcessPayment(paymentDetails);
             
