@@ -10,6 +10,8 @@ EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGateway.UnitTests", "PaymentGateway.UnitTests\PaymentGateway.UnitTests.csproj", "{121BC659-AAC8-4421-AB25-DBCD3C13F772}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGateway.IntegrationTests", "PaymentGateway.IntegrationTests\PaymentGateway.IntegrationTests.csproj", "{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{121BC659-AAC8-4421-AB25-DBCD3C13F772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{121BC659-AAC8-4421-AB25-DBCD3C13F772}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{121BC659-AAC8-4421-AB25-DBCD3C13F772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

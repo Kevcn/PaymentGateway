@@ -6,6 +6,7 @@ using PaymentGateway.Services;
 
 namespace PaymentGateway.Controllers
 {
+    [Route("api/[controller]")]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;
@@ -17,7 +18,7 @@ namespace PaymentGateway.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetTransaction/{transactionID}")]
+        [HttpGet("transaction/{transactionID}")]
         public async Task<IActionResult> GetTransaction([FromRoute] long transactionID)
         {
             var transactionHistory = await _transactionService.GetTransactionHistoryById(transactionID);

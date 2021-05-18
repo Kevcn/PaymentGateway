@@ -19,8 +19,8 @@ namespace PaymentGateway.Repository
         
         public async Task<int> SavePaymentDetails(PaymentDetailsDTO paymentDetails)
         {
-            const string InsertPaymentDetailsQuery = @"
-                USE payment_gateway;
+            var insertPaymentDetailsQuery = $@"
+                USE {_mySqlConfig.PaymentGatewayDB};
                 INSERT INTO payment_details (
                     CardNumber, 
                     ExpiryMonth, 
@@ -42,7 +42,7 @@ namespace PaymentGateway.Repository
             try
             {
                 await using var _connection = new MySqlConnection(_mySqlConfig.ConnectionString);
-                var paymentDetailsID = await _connection.QuerySingleAsync<int>(InsertPaymentDetailsQuery,
+                var paymentDetailsID = await _connection.QuerySingleAsync<int>(insertPaymentDetailsQuery,
                     new
                     {
                         paymentDetails.CardNumber,

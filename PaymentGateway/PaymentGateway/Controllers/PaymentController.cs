@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Contracts.V1.Requests;
 using PaymentGateway.Contracts.V1.Responses;
@@ -9,6 +8,7 @@ using PaymentGateway.Services;
 
 namespace PaymentGateway.Controllers
 {
+    [Route("api/[controller]")]
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
@@ -20,19 +20,13 @@ namespace PaymentGateway.Controllers
            _mapper = mapper;
        }
 
-       [HttpPost("ProcessPayment")]
+       [HttpPost("processPayment")]
        public async Task<IActionResult> ProcessPayment([FromBody] ProcessPaymentRequest processPaymentRequest)
        {
            var paymentDetails = _mapper.Map<PaymentDetails>(processPaymentRequest);
 
            var result = await _paymentService.ProcessPayment(paymentDetails);
            
-           if (!result.Success)
-           {
-               return StatusCode(StatusCodes.Status500InternalServerError, new FailedResponse
-               ("Failed", result.TransactionID, $"Failed to process payment for card {paymentDetails.CardNumber}"));
-           }
-
            return Ok(_mapper.Map<SuccessResponse>(result));
        }
     }

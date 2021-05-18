@@ -24,8 +24,8 @@ namespace PaymentGateway.Repository
         
         public async Task<bool> SaveTransactionDetails(TransactionDetailsDTO transactionDetails)
         {
-            const string InsertTransactionDetailsQuery = @"
-                USE payment_gateway;
+            var insertTransactionDetailsQuery = $@"
+                USE {_mySqlConfig.PaymentGatewayDB};
                 INSERT INTO transaction_details (
                     TransactionID, 
                     Success, 
@@ -40,7 +40,7 @@ namespace PaymentGateway.Repository
             try
             {
                 await using var _connection = new MySqlConnection(_mySqlConfig.ConnectionString);
-                var inserted = await _connection.ExecuteAsync(InsertTransactionDetailsQuery,
+                var inserted = await _connection.ExecuteAsync(insertTransactionDetailsQuery,
                     new
                     {
                         transactionDetails.TransactionID,
@@ -65,8 +65,8 @@ namespace PaymentGateway.Repository
 
         public async Task<TransactionHistory> GetTransactionHistoryById(long transactionID)
         {
-            const string GetTransactionHistoryQuery = @"
-                USE payment_gateway;
+            var getTransactionHistoryQuery = $@"
+                USE {_mySqlConfig.PaymentGatewayDB};
                 SELECT 
                     CardNumber,
                     CardHolderName,
@@ -81,7 +81,7 @@ namespace PaymentGateway.Repository
             try
             {
                 await using var _connection = new MySqlConnection(_mySqlConfig.ConnectionString);
-                var transactionHistory = await _connection.QueryAsync<TransactionHistoryDTO>(GetTransactionHistoryQuery, 
+                var transactionHistory = await _connection.QueryAsync<TransactionHistoryDTO>(getTransactionHistoryQuery, 
                     new
                     {
                         transactionID
