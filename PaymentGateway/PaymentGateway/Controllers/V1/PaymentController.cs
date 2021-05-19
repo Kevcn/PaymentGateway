@@ -1,15 +1,15 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
+using PaymentGateway.Contracts;
 using PaymentGateway.Contracts.V1.Requests;
 using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Domain;
 using PaymentGateway.Services;
+using Serilog;
 
-namespace PaymentGateway.Controllers
+namespace PaymentGateway.Controllers.V1
 {
-    [Route("api/[controller]")]
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
@@ -23,7 +23,7 @@ namespace PaymentGateway.Controllers
            _logger = logger;
        }
 
-       [HttpPost("processPayment")]
+       [HttpPost(ApiRoutes.Payment.Process)]
        public async Task<IActionResult> ProcessPayment([FromBody] ProcessPaymentRequest processPaymentRequest)
        {
            _logger.Information($"Received process payment request for card {processPaymentRequest.CardNumber}");

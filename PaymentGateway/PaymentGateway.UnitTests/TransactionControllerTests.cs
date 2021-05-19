@@ -7,6 +7,7 @@ using Moq;
 using PaymentGateway.Configurations.Mappings;
 using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Controllers;
+using PaymentGateway.Controllers.V1;
 using PaymentGateway.Domain;
 using PaymentGateway.Services;
 using Serilog;
@@ -51,7 +52,7 @@ namespace PaymentGateway.UnitTests
             
             _mockTransactionService.Setup(x => x.GetTransactionHistoryById(transactionId)).ReturnsAsync(expectedTransactionHistory);
 
-            var actual = (OkObjectResult) await _transactionController.GetTransaction(transactionId);
+            var actual = (OkObjectResult) await _transactionController.Get(transactionId);
             var actualResponse = actual.Value as TransactionHistoryResponse;
             
             Assert.Equal(expectedTransactionHistory.CardNumber, actualResponse.CardNumber);
@@ -71,7 +72,7 @@ namespace PaymentGateway.UnitTests
             _mockTransactionService.Setup(x => x.GetTransactionHistoryById(transactionId)).
                 ReturnsAsync(() => null);
 
-            var actual = (IStatusCodeActionResult) await _transactionController.GetTransaction(transactionId);
+            var actual = (IStatusCodeActionResult) await _transactionController.Get(transactionId);
             var actualStatusCode = actual.StatusCode;
             
             Assert.Equal(expectedStatusCode, actualStatusCode);

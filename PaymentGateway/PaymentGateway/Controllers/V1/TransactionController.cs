@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PaymentGateway.Contracts;
 using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Services;
 using Serilog;
 
-namespace PaymentGateway.Controllers
+namespace PaymentGateway.Controllers.V1
 {
-    [Route("api/[controller]")]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;
@@ -21,8 +21,8 @@ namespace PaymentGateway.Controllers
             _logger = logger;
         }
 
-        [HttpGet("transaction/{transactionId}")]
-        public async Task<IActionResult> GetTransaction([FromRoute] long transactionId)
+        [HttpGet(ApiRoutes.Transaction.Get)]
+        public async Task<IActionResult> Get([FromRoute] long transactionId)
         {
             _logger.Information($"Received get transaction request for id {transactionId}");
             var transactionHistory = await _transactionService.GetTransactionHistoryById(transactionId);

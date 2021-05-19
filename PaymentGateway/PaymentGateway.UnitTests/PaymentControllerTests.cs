@@ -7,6 +7,7 @@ using PaymentGateway.Configurations.Mappings;
 using PaymentGateway.Contracts.V1.Requests;
 using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Controllers;
+using PaymentGateway.Controllers.V1;
 using PaymentGateway.Domain;
 using PaymentGateway.Services;
 using Serilog;
