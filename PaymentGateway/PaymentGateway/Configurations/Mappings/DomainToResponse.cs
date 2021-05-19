@@ -8,7 +8,7 @@ namespace PaymentGateway.Configurations.Mappings
     {
         public DomainToResponse()
         {
-            CreateMap<ProcessPaymentResult, SuccessResponse>()
+            CreateMap<ProcessPaymentResult, ProcessPaymentResponse>()
                 .ForMember(des => des.Status, opt 
                     => opt.MapFrom(src => src.Success ? "Success" : "Failed"));
 

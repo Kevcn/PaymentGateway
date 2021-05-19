@@ -19,9 +19,9 @@ namespace PaymentGateway.Controllers
         }
 
         [HttpGet("transaction/{transactionID}")]
-        public async Task<IActionResult> GetTransaction([FromRoute] long transactionID)
+        public async Task<IActionResult> GetTransaction([FromRoute] long transactionId)
         {
-            var transactionHistory = await _transactionService.GetTransactionHistoryById(transactionID);
+            var transactionHistory = await _transactionService.GetTransactionHistoryById(transactionId);
 
             if (transactionHistory == null)
             {

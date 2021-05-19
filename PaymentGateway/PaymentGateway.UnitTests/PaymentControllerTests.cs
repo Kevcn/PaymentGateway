@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using PaymentGateway.Configurations.Mappings;
 using PaymentGateway.Contracts.V1.Requests;
 using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Controllers;
@@ -15,28 +17,25 @@ namespace PaymentGateway.UnitTests
     {
         private readonly PaymentController _paymentController;
         private readonly Mock<IPaymentService> _mockPaymentService;
-        private readonly Mock<IMapper> _mockMapper;
 
         public PaymentControllerTests()
         {
             _mockPaymentService = new Mock<IPaymentService>();
-            _mockMapper = new Mock<IMapper>();
+            
+            var config = new MapperConfiguration(cfg => 
+                cfg.AddProfiles(new List<Profile>{ new RequestToDomain(), new DomainToResponse()}));
+            var mapper = config.CreateMapper();
             
             _paymentController = new PaymentController(
                 _mockPaymentService.Object,
-                _mockMapper.Object);
+                mapper);
         }
         
         [Fact]
-        public async Task ProcessPayment_ShouldReturnSuccessResponse_WhenProcessPaymentSucceeds()
+        public async Task ProcessPayment_ShouldReturnSuccessStatus_WhenProcessPaymentSucceeds()
         {
-            const long ExpectedTransactionID = 9900;
-
-            var expectedResponse = new SuccessResponse
-            {
-                Status = "Success",
-                TransactionID = ExpectedTransactionID
-            };
+            var expectedTransactionID = 9900;
+            var expectedStatus = "Success";
             
             var processPaymentRequest = new ProcessPaymentRequest
             {
@@ -49,29 +48,23 @@ namespace PaymentGateway.UnitTests
                 CVV = "111"
             };
 
-            var paymentProcessresult = new ProcessPaymentResult(true, ExpectedTransactionID);
+            var paymentProcessresult = new ProcessPaymentResult(true, expectedTransactionID);
             
             _mockPaymentService.Setup(x => x.ProcessPayment(It.IsAny<PaymentDetails>()))
                 .ReturnsAsync(paymentProcessresult);
-            _mockMapper.Setup(x => x.Map<SuccessResponse>(paymentProcessresult)).Returns(expectedResponse);
 
             var actual = (OkObjectResult) await _paymentController.ProcessPayment(processPaymentRequest);
-            var actualResponse = actual.Value as SuccessResponse;
+            var actualResponse = actual.Value as ProcessPaymentResponse;
             
-            Assert.Equal(expectedResponse.Status, actualResponse.Status);
-            Assert.Equal(expectedResponse.TransactionID, actualResponse.TransactionID);
+            Assert.Equal(expectedStatus, actualResponse.Status);
+            Assert.Equal(expectedTransactionID, actualResponse.TransactionID);
         }
         
         [Fact]
-        public async Task ProcessPayment_ShouldReturnFailedResponse_WhenProcessPaymentFails()
+        public async Task ProcessPayment_ShouldReturnFailedStatus_WhenProcessPaymentFails()
         {
-            const long ExpectedTransactionID = 9901;
-
-            var expectedResponse = new SuccessResponse
-            {
-                Status = "Failed",
-                TransactionID = ExpectedTransactionID
-            };
+            var expectedTransactionID = 9901;
+            var expectedStatus = "Failed";
             
             var processPaymentRequest = new ProcessPaymentRequest
             {
@@ -84,17 +77,16 @@ namespace PaymentGateway.UnitTests
                 CVV = "111"
             };
 
-            var paymentProcessresult = new ProcessPaymentResult(false, ExpectedTransactionID);
+            var paymentProcessresult = new ProcessPaymentResult(false, expectedTransactionID);
             
             _mockPaymentService.Setup(x => x.ProcessPayment(It.IsAny<PaymentDetails>()))
                 .ReturnsAsync(paymentProcessresult);
-            _mockMapper.Setup(x => x.Map<SuccessResponse>(paymentProcessresult)).Returns(expectedResponse);
 
             var actual = (OkObjectResult) await _paymentController.ProcessPayment(processPaymentRequest);
-            var actualResponse = actual.Value as SuccessResponse;
+            var actualResponse = actual.Value as ProcessPaymentResponse;
             
-            Assert.Equal(expectedResponse.Status, actualResponse.Status);
-            Assert.Equal(expectedResponse.TransactionID, actualResponse.TransactionID);
+            Assert.Equal(expectedStatus, actualResponse.Status);
+            Assert.Equal(expectedTransactionID, actualResponse.TransactionID);
         }
     }
 }

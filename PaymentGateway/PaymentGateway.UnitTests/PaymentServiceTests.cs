@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Moq;
+using PaymentGateway.Configurations.Mappings;
 using PaymentGateway.Contracts;
 using PaymentGateway.Domain;
 using PaymentGateway.Repository;
@@ -18,26 +19,27 @@ namespace PaymentGateway.UnitTests
         private readonly Mock<IPaymentRepository> _mockPaymentRepository;
         private readonly Mock<ISimulatedBankService> _mockSimulatedBankService;
         private readonly Mock<ITransactionService> _mockTransactionService;
-        private readonly Mock<IMapper> _mockMapper;
         
         public PaymentServiceTests()
         {
             _mockPaymentRepository = new Mock<IPaymentRepository>();
             _mockSimulatedBankService = new Mock<ISimulatedBankService>();
             _mockTransactionService = new Mock<ITransactionService>();
-            _mockMapper = new Mock<IMapper>();
+            
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<DomainToDTO>());
+            var mapper = config.CreateMapper();
             
             _paymentService = new PaymentService(
                 _mockPaymentRepository.Object, 
                 _mockSimulatedBankService.Object, 
                 _mockTransactionService.Object,
-                _mockMapper.Object);
+                mapper);
         }
         
         [Fact]
         public async Task ProcessPayment_ShouldReturnSuccessResult_WhenBankReturnsSuccessResponse()
         {
-            const long ExpectedTransactionID = 9999;
+            var expectedTransactionID = 9999;
             
             var paymentDetails = new PaymentDetails
             {
@@ -52,7 +54,7 @@ namespace PaymentGateway.UnitTests
             
             _mockPaymentRepository.Setup(x => x.SavePaymentDetails(It.IsAny<PaymentDetailsDTO>())).ReturnsAsync(123);
             _mockSimulatedBankService.Setup(x => x.GetBankResponse(paymentDetails))
-                .ReturnsAsync(new SimulatedBankResponse(ExpectedTransactionID, TransactionStatus.Success));
+                .ReturnsAsync(new SimulatedBankResponse(expectedTransactionID, TransactionStatus.Success));
             _mockTransactionService
                 .Setup(x => x.SaveTransactionDetails(It.IsAny<TransactionDetails>()))
                 .ReturnsAsync(true);
@@ -60,12 +62,14 @@ namespace PaymentGateway.UnitTests
             var actual = await _paymentService.ProcessPayment(paymentDetails);
 
             Assert.True(actual.Success);
-            Assert.Equal(ExpectedTransactionID, actual.TransactionID);
+            Assert.Equal(expectedTransactionID, actual.TransactionID);
         }
 
         [Fact]
         public async Task ProcessPayment_ShouldReturnFailedResult_WhenBankReturnsFailedResponse()
         {
+            var expectedTransactionID = 9998;
+
             var paymentDetails = new PaymentDetails
             {
                 CardNumber = "1234123412341234",
@@ -79,7 +83,7 @@ namespace PaymentGateway.UnitTests
             
             _mockPaymentRepository.Setup(x => x.SavePaymentDetails(It.IsAny<PaymentDetailsDTO>())).ReturnsAsync(123);
             _mockSimulatedBankService.Setup(x => x.GetBankResponse(paymentDetails))
-                .ReturnsAsync(new SimulatedBankResponse(0, TransactionStatus.Fail));
+                .ReturnsAsync(new SimulatedBankResponse(expectedTransactionID, TransactionStatus.Fail));
             _mockTransactionService
                 .Setup(x => x.SaveTransactionDetails(It.IsAny<TransactionDetails>()))
                 .ReturnsAsync(true);
@@ -87,6 +91,7 @@ namespace PaymentGateway.UnitTests
             var actual = await _paymentService.ProcessPayment(paymentDetails);
             
             Assert.False(actual.Success);
+            Assert.Equal(expectedTransactionID, actual.TransactionID);
         }
     }
 }

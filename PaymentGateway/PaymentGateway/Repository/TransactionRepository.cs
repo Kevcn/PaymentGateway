@@ -74,7 +74,7 @@ namespace PaymentGateway.Repository
                     Currency,
                     Success,
                     CreatedDate
-                FROM payment_gateway.transaction_details td
+                FROM transaction_details td
                 JOIN payment_details pd ON td.PaymentDetailsID = pd.ID
                 WHERE TransactionID = @transactionID";
 

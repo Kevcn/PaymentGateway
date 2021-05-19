@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Moq;
+using PaymentGateway.Configurations.Mappings;
 using PaymentGateway.Domain;
 using PaymentGateway.Repository;
 using PaymentGateway.Repository.DTO;
@@ -15,18 +16,19 @@ namespace PaymentGateway.UnitTests
         private readonly TransactionService _transactionService;
         private readonly Mock<ITransactionRepository> _mockTransactionRepository;
         private readonly Mock<ICardService> _mockCardService;
-        private readonly Mock<IMapper> _mockMapper;
 
         public TransactionServiceTests()
         {
             _mockTransactionRepository = new Mock<ITransactionRepository>();
             _mockCardService = new Mock<ICardService>();
-            _mockMapper = new Mock<IMapper>();
+            
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<DomainToDTO>());
+            var mapper = config.CreateMapper();
 
             _transactionService = new TransactionService(
                 _mockTransactionRepository.Object, 
                 _mockCardService.Object,
-                _mockMapper.Object);
+                mapper);
         }
 
         [Fact]
@@ -58,8 +60,8 @@ namespace PaymentGateway.UnitTests
         [Fact]
         public async Task GetTransactionHistoryById_ShouldReturnTransactionHistory_WhenTransactionFound()
         {
-            const long TransactionID = 31215;
-            const string ExpectedCardNumber = "123412******1234";
+            var transactionId = 31215;
+            var expectedCardNumber = "123412******1234";
 
             var expectedTransactionHistory = new TransactionHistory
             {
@@ -71,14 +73,14 @@ namespace PaymentGateway.UnitTests
                 CreatedDate = new DateTime(2021, 5, 17, 22, 17, 00)
             };
 
-            _mockTransactionRepository.Setup(x => x.GetTransactionHistoryById(TransactionID))
+            _mockTransactionRepository.Setup(x => x.GetTransactionHistoryById(transactionId))
                 .ReturnsAsync(expectedTransactionHistory);
             _mockCardService.Setup(x => x.MaskCardNumber(expectedTransactionHistory.CardNumber))
-                .Returns(ExpectedCardNumber);
+                .Returns(expectedCardNumber);
 
-            var actual = await _transactionService.GetTransactionHistoryById(TransactionID);
+            var actual = await _transactionService.GetTransactionHistoryById(transactionId);
 
-            Assert.Equal(ExpectedCardNumber, actual.CardNumber);
+            Assert.Equal(expectedCardNumber, actual.CardNumber);
             Assert.Equal(expectedTransactionHistory.CardHolderName, actual.CardHolderName);
             Assert.Equal(expectedTransactionHistory.Amount, actual.Amount);
             Assert.Equal(expectedTransactionHistory.Currency, actual.Currency);
@@ -89,12 +91,12 @@ namespace PaymentGateway.UnitTests
         [Fact]
         public async Task GetTransactionHistoryById_ShouldReturnNull_WhenTransactionNotFound()
         {
-            const long TransactionID = 31215;
+            var transactionId = 31215;
 
-            _mockTransactionRepository.Setup(x => x.GetTransactionHistoryById(TransactionID))
+            _mockTransactionRepository.Setup(x => x.GetTransactionHistoryById(transactionId))
                 .ReturnsAsync(() => null);
 
-            var actual = await _transactionService.GetTransactionHistoryById(TransactionID);
+            var actual = await _transactionService.GetTransactionHistoryById(transactionId);
             
             Assert.Null(actual);
         }

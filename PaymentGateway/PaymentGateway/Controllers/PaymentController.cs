@@ -27,7 +27,7 @@ namespace PaymentGateway.Controllers
 
            var result = await _paymentService.ProcessPayment(paymentDetails);
            
-           return Ok(_mapper.Map<SuccessResponse>(result));
+           return Ok(_mapper.Map<ProcessPaymentResponse>(result));
        }
     }
 }
