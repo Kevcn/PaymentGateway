@@ -9,6 +9,7 @@ using PaymentGateway.Repository;
 using PaymentGateway.Repository.DTO;
 using PaymentGateway.Services;
 using PaymentGateway.SimulatedBank;
+using Serilog;
 using Xunit;
 
 namespace PaymentGateway.UnitTests
@@ -19,21 +20,24 @@ namespace PaymentGateway.UnitTests
         private readonly Mock<IPaymentRepository> _mockPaymentRepository;
         private readonly Mock<ISimulatedBankService> _mockSimulatedBankService;
         private readonly Mock<ITransactionService> _mockTransactionService;
-        
+        private readonly Mock<ILogger> _mockLogger;
+
         public PaymentServiceTests()
         {
             _mockPaymentRepository = new Mock<IPaymentRepository>();
             _mockSimulatedBankService = new Mock<ISimulatedBankService>();
             _mockTransactionService = new Mock<ITransactionService>();
-            
+            _mockLogger = new Mock<ILogger>();
+
             var config = new MapperConfiguration(cfg => cfg.AddProfile<DomainToDTO>());
             var mapper = config.CreateMapper();
-            
+
             _paymentService = new PaymentService(
-                _mockPaymentRepository.Object, 
-                _mockSimulatedBankService.Object, 
+                _mockPaymentRepository.Object,
+                _mockSimulatedBankService.Object,
                 _mockTransactionService.Object,
-                mapper);
+                mapper,
+                _mockLogger.Object);
         }
         
         [Fact]

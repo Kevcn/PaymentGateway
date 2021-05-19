@@ -9,6 +9,7 @@ using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Controllers;
 using PaymentGateway.Domain;
 using PaymentGateway.Services;
+using Serilog;
 using Xunit;
 
 namespace PaymentGateway.UnitTests
@@ -17,18 +18,21 @@ namespace PaymentGateway.UnitTests
     {
         private readonly PaymentController _paymentController;
         private readonly Mock<IPaymentService> _mockPaymentService;
+        private readonly Mock<ILogger> _mockLogger;
 
         public PaymentControllerTests()
         {
             _mockPaymentService = new Mock<IPaymentService>();
-            
+            _mockLogger = new Mock<ILogger>();
+
             var config = new MapperConfiguration(cfg => 
                 cfg.AddProfiles(new List<Profile>{ new RequestToDomain(), new DomainToResponse()}));
             var mapper = config.CreateMapper();
             
             _paymentController = new PaymentController(
                 _mockPaymentService.Object,
-                mapper);
+                mapper,
+                _mockLogger.Object);
         }
         
         [Fact]

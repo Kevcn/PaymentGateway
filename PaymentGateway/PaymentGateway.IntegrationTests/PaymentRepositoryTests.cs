@@ -3,10 +3,12 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Moq;
 using MySql.Data.MySqlClient;
 using PaymentGateway.Configurations;
 using PaymentGateway.Repository;
 using PaymentGateway.Repository.DTO;
+using Serilog;
 using Xunit;
 
 namespace PaymentGateway.IntegrationTests
@@ -17,14 +19,17 @@ namespace PaymentGateway.IntegrationTests
         private const string ConnectionString = "Server=localhost;Uid=rw_user;Pwd=Warrington4";
 
         private readonly PaymentRepository _paymentRepository;
-        
+        private readonly Mock<ILogger> _mockLogger;
+
         public PaymentRepositoryTests() : base(ConnectionString, TestDatabaseName + + new Random().Next(0, int.MaxValue))
         {
+            _mockLogger = new Mock<ILogger>();
+            
             _paymentRepository = new PaymentRepository(Options.Create(new MySqlConfig
             {
                 ConnectionString = ConnectionString,
                 PaymentGatewayDB = _databaseName
-            }));
+            }), _mockLogger.Object);
         }
 
         protected override string DatabaseSeed => MySqlTables.CreatePaymentDetails;

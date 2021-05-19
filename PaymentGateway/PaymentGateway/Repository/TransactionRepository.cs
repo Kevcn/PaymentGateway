@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using PaymentGateway.Configurations;
 using PaymentGateway.Domain;
 using PaymentGateway.Repository.DTO;
+using Serilog;
 
 namespace PaymentGateway.Repository
 {
@@ -15,11 +16,13 @@ namespace PaymentGateway.Repository
     {
         private readonly MySqlConfig _mySqlConfig;
         private readonly IMapper _mapper;
-        
-        public TransactionRepository(IOptions<MySqlConfig> mySqlConfig, IMapper mapper)
+        private readonly ILogger _logger;
+
+        public TransactionRepository(IOptions<MySqlConfig> mySqlConfig, IMapper mapper, ILogger logger)
         {
             _mySqlConfig = mySqlConfig.Value;
             _mapper = mapper;
+            _logger = logger;
         }
         
         public async Task<bool> SaveTransactionDetails(TransactionDetailsDTO transactionDetails)
@@ -53,12 +56,12 @@ namespace PaymentGateway.Repository
             }
             catch (MySqlException e)
             {
-                Console.WriteLine(e);
+                _logger.Error(e, "Error saving transaction details");
                 throw;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.Error(e, "Error saving transaction details");
                 throw;
             }
         }
@@ -91,12 +94,12 @@ namespace PaymentGateway.Repository
             }
             catch (MySqlException e)
             {
-                Console.WriteLine(e);
+                _logger.Error(e, "Error getting transaction history by id");
                 throw;
             }
-            catch (InvalidOperationException e)
+            catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.Error(e, "Error getting transaction history by id");
                 throw;
             }
         }
