@@ -5,16 +5,19 @@ using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
 using PaymentGateway.Configurations;
 using PaymentGateway.Repository.DTO;
+using Serilog;
 
 namespace PaymentGateway.Repository
 {
     public class PaymentRepository : IPaymentRepository
     {
         private readonly MySqlConfig _mySqlConfig;
+        private readonly ILogger _logger;
         
-        public PaymentRepository(IOptions<MySqlConfig> mySqlConfig)
+        public PaymentRepository(IOptions<MySqlConfig> mySqlConfig, ILogger logger)
         {
             _mySqlConfig = mySqlConfig.Value;
+            _logger = logger;
         }
         
         public async Task<int> SavePaymentDetails(PaymentDetailsDTO paymentDetails)
@@ -58,12 +61,12 @@ namespace PaymentGateway.Repository
             }
             catch (MySqlException e)
             {
-                Console.WriteLine(e);
+                _logger.Error(e, "Error saving payment details");
                 throw;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.Error(e, "Error saving payment details");
                 throw;
             }
         }

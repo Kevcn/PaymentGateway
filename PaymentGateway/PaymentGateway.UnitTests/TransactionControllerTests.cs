@@ -9,6 +9,7 @@ using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Controllers;
 using PaymentGateway.Domain;
 using PaymentGateway.Services;
+using Serilog;
 using Xunit;
 
 namespace PaymentGateway.UnitTests
@@ -17,17 +18,20 @@ namespace PaymentGateway.UnitTests
     {
         private readonly TransactionController _transactionController;
         private readonly Mock<ITransactionService> _mockTransactionService;
-        
+        private readonly Mock<ILogger> _mockLogger;
+
         public TransactionControllerTests()
         {
             _mockTransactionService = new Mock<ITransactionService>();
+            _mockLogger = new Mock<ILogger>();
             
             var config = new MapperConfiguration(cfg => cfg.AddProfile<DomainToResponse>());
             var mapper = config.CreateMapper();
 
             _transactionController = new TransactionController(
                 _mockTransactionService.Object,
-                mapper);
+                mapper,
+                _mockLogger.Object);
         }
         
         [Fact]
@@ -72,6 +76,5 @@ namespace PaymentGateway.UnitTests
             
             Assert.Equal(expectedStatusCode, actualStatusCode);
         }
-
     }
 }

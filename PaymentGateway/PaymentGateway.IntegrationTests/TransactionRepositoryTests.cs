@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
+using Moq;
 using MySql.Data.MySqlClient;
 using PaymentGateway.Configurations;
 using PaymentGateway.Configurations.Mappings;
 using PaymentGateway.Repository;
 using PaymentGateway.Repository.DTO;
+using Serilog;
 using Xunit;
 
 namespace PaymentGateway.IntegrationTests
@@ -19,9 +21,12 @@ namespace PaymentGateway.IntegrationTests
         private const string ConnectionString = "Server=localhost;Uid=rw_user;Pwd=Warrington4";
         
         private readonly TransactionRepository _transactionRepository;
-        
+        private readonly Mock<ILogger> _mockLogger;
+
         public TransactionRepositoryTests() : base(ConnectionString, TestDatabaseName + + new Random().Next(0, int.MaxValue))
         {
+            _mockLogger = new Mock<ILogger>();
+
             var config = new MapperConfiguration(cfg => cfg.AddProfile<DTOToDomain>());
             var mapper = config.CreateMapper();
 
@@ -29,7 +34,7 @@ namespace PaymentGateway.IntegrationTests
             {
                 ConnectionString = ConnectionString,
                 PaymentGatewayDB = _databaseName
-            }), mapper);
+            }), mapper, _mockLogger.Object);
         }
 
         protected override string DatabaseSeed => MySqlTables.CreatePaymentDetails +
