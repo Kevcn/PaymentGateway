@@ -1,30 +1,5 @@
-version: '3.8'
+version: '2.2'
 services:
-  paymentgateway:
-    build: PaymentGateway/
-    ports:
-      - 9000:80
-    environment:
-      MySqlConfig__ConnectionString: Server=mysql;Uid=rw_user;Pwd=Warrington4
-      ElasticConfiguration__Uri: http://es01:9200
-    depends_on:
-      - mysql
-      - es01
-      - kib01
-    networks:
-      - pg_network
-  mysql:
-    image: mysql:5.7
-    command: --lower_case_table_names=1
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: example
-    ports:
-      - 3307:3306
-    volumes:
-      - ./InitialiseDB/:/docker-entrypoint-initdb.d
-    networks:
-      - pg_network
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
     container_name: es01
@@ -43,7 +18,8 @@ services:
     ports:
       - 9200:9200
     networks:
-      - pg_network
+      - elastic
+
   kib01:
     image: docker.elastic.co/kibana/kibana:7.12.1
     container_name: kib01
@@ -53,12 +29,12 @@ services:
       ELASTICSEARCH_URL: http://es01:9200
       ELASTICSEARCH_HOSTS: http://es01:9200
     networks:
-      - pg_network
+      - elastic
 
 volumes:
   data01:
     driver: local
 
 networks:
-  pg_network:
+  elastic:
     driver: bridge
