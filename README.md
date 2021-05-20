@@ -15,10 +15,12 @@
 * Payment request payload assumptions such as: 
     * A valid card number contains 16 digits
     * Currency is received in ISO Currency Code that always consists of 3 capital letters
-* I am using random to generate transaction IDs from the simulated bank, there is a very small chance that this will end up with duplicated transaction ID; the assumption is that this transaction ID will always be unique from the real bank.
+* A random is used to generate transaction IDs from the simulated bank, there is a very small chance that this will end up with duplicated transaction ID; the assumption is that this transaction ID will always be unique from the real bank.
+* Details such as expiry date and CVV are irrelevant when retrieving transaction history
+* The expected transaction created date is in UTC
 
 ### Project Overview
-* Upon receiving process payment request, the payment details are validated before storing it into payment_details table.  
+* Upon receiving process payment request, the payment details are validated before stored into payment_details table.  
   A request to the simulated bank is then made to process the payment, and the result of the transaction is stored into transaction_details table.  
   The status of the transaction and the transaction ID is provided as part of the response.  
   Transaction details can then be retrieved using a given transaction ID
@@ -46,7 +48,7 @@
                 "transactionID": 1879946082
             }
     
-    * [GET] get transaction - `api/v1/transaction/{transactionId}`
+    * [GET] get transaction history - `api/v1/transaction/{transactionId}`
 
         Sample Response:
         Status Code `200`
