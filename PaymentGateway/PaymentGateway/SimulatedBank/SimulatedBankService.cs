@@ -12,8 +12,10 @@ namespace PaymentGateway.SimulatedBank
             // Fake bank response
 
             Random random = new Random();
+            var transactionId = random.Next();
             
-            var response = new SimulatedBankResponse(random.Next(), TransactionStatus.Success);
+            var response = new SimulatedBankResponse(transactionId, 
+                transactionId % 2 == 0 ? TransactionStatus.Success : TransactionStatus.Fail);
             
             return await Task.FromResult(response);
         }
