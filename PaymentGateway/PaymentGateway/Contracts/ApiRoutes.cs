@@ -8,7 +8,7 @@
 
         public static class Payment
         {
-            public const string Process = Base + "/payment/process";
+            public const string Process = Base + "/payment";
         }
 
         public static class Transaction

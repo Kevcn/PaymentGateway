@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +20,13 @@ namespace PaymentGateway.UnitTests
     {
         private readonly PaymentController _paymentController;
         private readonly Mock<IPaymentService> _mockPaymentService;
+        private readonly Mock<IUriService> _mockUriService;
         private readonly Mock<ILogger> _mockLogger;
 
         public PaymentControllerTests()
         {
             _mockPaymentService = new Mock<IPaymentService>();
+            _mockUriService = new Mock<IUriService>();
             _mockLogger = new Mock<ILogger>();
 
             var config = new MapperConfiguration(cfg => 
@@ -32,6 +35,7 @@ namespace PaymentGateway.UnitTests
             
             _paymentController = new PaymentController(
                 _mockPaymentService.Object,
+                _mockUriService.Object,
                 mapper,
                 _mockLogger.Object);
         }
@@ -39,6 +43,7 @@ namespace PaymentGateway.UnitTests
         [Fact]
         public async Task ProcessPayment_ShouldReturnSuccessStatus_WhenProcessPaymentSucceeds()
         {
+            var expectedStatusCode = 201;
             var expectedTransactionID = 9900;
             var expectedStatus = "Success";
             
@@ -57,10 +62,12 @@ namespace PaymentGateway.UnitTests
             
             _mockPaymentService.Setup(x => x.ProcessPayment(It.IsAny<PaymentDetails>()))
                 .ReturnsAsync(paymentProcessresult);
+            _mockUriService.Setup(x => x.GetTransactionUri(expectedTransactionID)).Returns(new Uri("localhost:111"));
 
-            var actual = (OkObjectResult) await _paymentController.ProcessPayment(processPaymentRequest);
+            var actual = (ObjectResult) await _paymentController.ProcessPayment(processPaymentRequest);
             var actualResponse = actual.Value as ProcessPaymentResponse;
             
+            Assert.Equal(expectedStatusCode, actual.StatusCode);
             Assert.Equal(expectedStatus, actualResponse.Status);
             Assert.Equal(expectedTransactionID, actualResponse.TransactionID);
         }
@@ -68,6 +75,7 @@ namespace PaymentGateway.UnitTests
         [Fact]
         public async Task ProcessPayment_ShouldReturnFailedStatus_WhenProcessPaymentFails()
         {
+            var expectedStatusCode = 201;
             var expectedTransactionID = 9901;
             var expectedStatus = "Failed";
             
@@ -86,10 +94,12 @@ namespace PaymentGateway.UnitTests
             
             _mockPaymentService.Setup(x => x.ProcessPayment(It.IsAny<PaymentDetails>()))
                 .ReturnsAsync(paymentProcessresult);
+            _mockUriService.Setup(x => x.GetTransactionUri(expectedTransactionID)).Returns(new Uri("localhost:111"));
 
-            var actual = (OkObjectResult) await _paymentController.ProcessPayment(processPaymentRequest);
+            var actual = (ObjectResult) await _paymentController.ProcessPayment(processPaymentRequest);
             var actualResponse = actual.Value as ProcessPaymentResponse;
             
+            Assert.Equal(expectedStatusCode, actual.StatusCode);
             Assert.Equal(expectedStatus, actualResponse.Status);
             Assert.Equal(expectedTransactionID, actualResponse.TransactionID);
         }

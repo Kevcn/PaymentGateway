@@ -51,6 +51,14 @@ namespace PaymentGateway
             services.AddScoped<ISimulatedBankService, SimulatedBankService>();
             services.AddScoped<ICardService, CardService>();
 
+            services.AddSingleton<IUriService>(provider =>
+            {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), "/");
+                return new UriService(absoluteUri);
+            });
+            
             services.Configure<MySqlConfig>(Configuration.GetSection("MySqlConfig"));
             services.AddOptions();
 

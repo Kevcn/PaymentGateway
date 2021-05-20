@@ -41,7 +41,7 @@ namespace PaymentGateway.IntegrationTests
             
             var requestContent = new StringContent(JsonConvert.SerializeObject(processPaymentRequest), Encoding.UTF8, "application/json");
             
-            var response = await _client.PostAsync("api/payment/processPayment", requestContent);
+            var response = await _client.PostAsync("api/v1/payment", requestContent);
             var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(await response.Content.ReadAsStringAsync());
 
             Assert.Equal(expectedStatusCode, response.StatusCode);
@@ -67,7 +67,7 @@ namespace PaymentGateway.IntegrationTests
             
             var requestContent = new StringContent(JsonConvert.SerializeObject(processPaymentRequest), Encoding.UTF8, "application/json");
             
-            var response = await _client.PostAsync("api/payment/processPayment", requestContent);
+            var response = await _client.PostAsync("api/v1/payment", requestContent);
             var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(await response.Content.ReadAsStringAsync());
 
             Assert.Equal(expectedStatusCode, response.StatusCode);
@@ -93,7 +93,7 @@ namespace PaymentGateway.IntegrationTests
             
             var requestContent = new StringContent(JsonConvert.SerializeObject(processPaymentRequest), Encoding.UTF8, "application/json");
             
-            var response = await _client.PostAsync("api/payment/processPayment", requestContent);
+            var response = await _client.PostAsync("api/v1/payment", requestContent);
             var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(await response.Content.ReadAsStringAsync());
 
             Assert.Equal(expectedStatusCode, response.StatusCode);

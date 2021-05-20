@@ -13,12 +13,14 @@ namespace PaymentGateway.Controllers.V1
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IUriService _uriService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public PaymentController(IPaymentService paymentService, IMapper mapper, ILogger logger)
+        public PaymentController(IPaymentService paymentService, IUriService uriService, IMapper mapper, ILogger logger)
        {
            _paymentService = paymentService;
+           _uriService = uriService;
            _mapper = mapper;
            _logger = logger;
        }
@@ -31,7 +33,8 @@ namespace PaymentGateway.Controllers.V1
 
            var result = await _paymentService.ProcessPayment(paymentDetails);
            
-           return Ok(_mapper.Map<ProcessPaymentResponse>(result));
+           var locationUri = _uriService.GetTransactionUri(result.TransactionID);
+           return Created(locationUri, _mapper.Map<ProcessPaymentResponse>(result));
        }
     }
 }

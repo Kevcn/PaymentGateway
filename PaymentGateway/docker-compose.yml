@@ -22,7 +22,7 @@ services:
     ports:
       - 3307:3306
     volumes:
-#      - D:\JunSalonSQL:/var/lib/mysql
+#      - D:\SQL:/var/lib/mysql
       - ./InitialiseDB/:/docker-entrypoint-initdb.d
     networks:
       - pg_network

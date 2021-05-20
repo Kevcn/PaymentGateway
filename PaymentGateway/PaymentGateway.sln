@@ -4,14 +4,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGateway", "PaymentGa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0370E6F-6846-4803-A082-3C896C034DC8}"
 ProjectSection(SolutionItems) = preProject
-	InitialiseDB\001-create-users.sql = InitialiseDB\001-create-users.sql
-	InitialiseDB\002-create-tables.sql = InitialiseDB\002-create-tables.sql
 	docker-compose.yml = docker-compose.yml
+	..\README.md = ..\README.md
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGateway.UnitTests", "PaymentGateway.UnitTests\PaymentGateway.UnitTests.csproj", "{121BC659-AAC8-4421-AB25-DBCD3C13F772}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGateway.IntegrationTests", "PaymentGateway.IntegrationTests\PaymentGateway.IntegrationTests.csproj", "{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InitialiseDB", "InitialiseDB", "{878EF71B-1711-484A-BF5B-5934251C2147}"
+ProjectSection(SolutionItems) = preProject
+	InitialiseDB\001-create-users.sql = InitialiseDB\001-create-users.sql
+	InitialiseDB\002-create-tables.sql = InitialiseDB\002-create-tables.sql
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,5 +36,8 @@ Global
 		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{878EF71B-1711-484A-BF5B-5934251C2147} = {C0370E6F-6846-4803-A082-3C896C034DC8}
 	EndGlobalSection
 EndGlobal
