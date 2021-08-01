@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
+using MySql.Data.MySqlClient;
 using PaymentGateway.Contracts;
 using PaymentGateway.Domain;
 using PaymentGateway.Repository;
 using PaymentGateway.Repository.DTO;
 using PaymentGateway.SimulatedBank;
+using Polly;
+using Polly.Retry;
 using Serilog;
 
 namespace PaymentGateway.Services
@@ -16,6 +20,7 @@ namespace PaymentGateway.Services
         private readonly ITransactionService _transactionService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly AsyncRetryPolicy _retryPolicy;
 
         public PaymentService(
             IPaymentRepository paymentRepository, 
@@ -28,25 +33,43 @@ namespace PaymentGateway.Services
             _transactionService = transactionService;
             _mapper = mapper;
             _logger = logger;
+            _retryPolicy = Policy.Handle<MySqlException>().WaitAndRetryAsync(
+                3, retryAttempt => TimeSpan.FromMilliseconds(retryAttempt * 100),
+                (result, duration, retryCount, context) => { LogRetry(retryCount); });
         }
         
         public async Task<ProcessPaymentResult> ProcessPayment(PaymentDetails paymentDetails)
         {
-            var paymentDetailsID = await _paymentRepository.SavePaymentDetails(_mapper.Map<PaymentDetailsDTO>(paymentDetails));
+            return await ExecuteWithRetry(async () =>
+            {
+                var paymentDetailsID =
+                    await _paymentRepository.SavePaymentDetails(_mapper.Map<PaymentDetailsDTO>(paymentDetails));
 
-            var bankResponse = await _simulatedBankService.GetBankResponse(paymentDetails);
-        
-            _logger.Information($"Received bank response for payment {paymentDetailsID}: Status - {bankResponse.Status}, TransactionID - {bankResponse.TransactionID}");
-            
-            var transactionDetails = new TransactionDetails(
-                bankResponse.TransactionID,
-                bankResponse.Status == TransactionStatus.Success,
-                paymentDetailsID
-            );
+                var bankResponse = await _simulatedBankService.GetBankResponse(paymentDetails);
 
-            await _transactionService.SaveTransactionDetails(transactionDetails);
+                _logger.Information(
+                    $"Received bank response for payment {paymentDetailsID}: Status - {bankResponse.Status}, TransactionID - {bankResponse.TransactionID}");
 
-            return new ProcessPaymentResult(transactionDetails.Success, transactionDetails.TransactionID);
+                var transactionDetails = new TransactionDetails(
+                    bankResponse.TransactionID,
+                    bankResponse.Status == TransactionStatus.Success,
+                    paymentDetailsID
+                );
+
+                await _transactionService.SaveTransactionDetails(transactionDetails);
+
+                return new ProcessPaymentResult(transactionDetails.Success, transactionDetails.TransactionID);
+            });
+        }
+
+        private async Task<ProcessPaymentResult> ExecuteWithRetry(Func<Task<ProcessPaymentResult>> action)
+        {
+            return await _retryPolicy.ExecuteAsync(action);
+        }
+
+        private void LogRetry(int retryCount)
+        {
+            _logger.Warning($"Attempting to process payment result, Attempt: {retryCount}");
         }
     }
 }
