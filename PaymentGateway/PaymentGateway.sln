@@ -20,6 +20,8 @@ ProjectSection(SolutionItems) = preProject
 	InitialiseDB\002-create-tables.sql = InitialiseDB\002-create-tables.sql
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{E0575756-28BF-4F14-85CB-5E48C09FA2D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E41C029C-36F5-458A-BCB2-C6E5FE816EA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0575756-28BF-4F14-85CB-5E48C09FA2D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0575756-28BF-4F14-85CB-5E48C09FA2D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0575756-28BF-4F14-85CB-5E48C09FA2D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0575756-28BF-4F14-85CB-5E48C09FA2D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{878EF71B-1711-484A-BF5B-5934251C2147} = {C0370E6F-6846-4803-A082-3C896C034DC8}
