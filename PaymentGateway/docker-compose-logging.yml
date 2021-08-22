@@ -18,7 +18,7 @@ services:
     ports:
       - 9200:9200
     networks:
-      - elastic
+      - logging_network
 
   kib01:
     image: docker.elastic.co/kibana/kibana:7.12.1
@@ -29,12 +29,22 @@ services:
       ELASTICSEARCH_URL: http://es01:9200
       ELASTICSEARCH_HOSTS: http://es01:9200
     networks:
-      - elastic
+      - logging_network
+
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - '5341:80'
+    environment:
+      - ACCEPT_EULA=Y
+    networks:
+      - logging_network
 
 volumes:
   data01:
     driver: local
 
 networks:
-  elastic:
+  logging_network:
     driver: bridge
