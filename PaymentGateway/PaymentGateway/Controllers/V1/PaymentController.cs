@@ -28,7 +28,10 @@ namespace PaymentGateway.Controllers.V1
        [HttpPost(ApiRoutes.Payment.Process)]
        public async Task<IActionResult> ProcessPayment([FromBody] ProcessPaymentRequest processPaymentRequest)
        {
-           _logger.Information($"Received process payment request for card {processPaymentRequest.CardNumber}");
+           _logger
+               .ForContext("CardNumber", processPaymentRequest.CardNumber)
+               .Information("Received process payment request");
+           
            var paymentDetails = _mapper.Map<PaymentDetails>(processPaymentRequest);
 
            var result = await _paymentService.ProcessPayment(paymentDetails);

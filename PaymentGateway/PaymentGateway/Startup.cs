@@ -22,6 +22,7 @@ using PaymentGateway.Contracts.V1.Responses;
 using PaymentGateway.Repository;
 using PaymentGateway.Services;
 using PaymentGateway.SimulatedBank;
+using Serilog;
 
 namespace PaymentGateway
 {
@@ -104,6 +105,9 @@ namespace PaymentGateway
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            // Can't see where the client IP is captured in neither ElasticSearch or Seq
+            app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogEnricher.EnrichFromRequest);
         }
     }
 }

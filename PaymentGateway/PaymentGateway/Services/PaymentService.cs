@@ -40,6 +40,7 @@ namespace PaymentGateway.Services
         
         public async Task<ProcessPaymentResult> ProcessPayment(PaymentDetails paymentDetails)
         {
+            // Wraps the call to repo with polly policy defined above
             return await ExecuteWithRetry(async () =>
             {
                 var paymentDetailsID =
@@ -47,9 +48,12 @@ namespace PaymentGateway.Services
 
                 var bankResponse = await _simulatedBankService.GetBankResponse(paymentDetails);
 
-                _logger.Information(
-                    $"Received bank response for payment {paymentDetailsID}: Status - {bankResponse.Status}, TransactionID - {bankResponse.TransactionID}");
-
+                _logger
+                    // ForContext - The propertyName will be displayed as a field in ElasticSearch. This is more concise and clean
+                    .ForContext("PaymentDetailsID", paymentDetailsID)
+                    // Example of destructing object built into Serilog
+                    .Information("Received bank response {@BankResponse}", bankResponse);
+                
                 var transactionDetails = new TransactionDetails(
                     bankResponse.TransactionID,
                     bankResponse.Status == TransactionStatus.Success,
@@ -69,7 +73,7 @@ namespace PaymentGateway.Services
 
         private void LogRetry(int retryCount)
         {
-            _logger.Warning($"Attempting to process payment result, Attempt: {retryCount}");
+            _logger.Warning("Attempting to process payment result, Attempt: {RetryCount}", retryCount);
         }
     }
 }

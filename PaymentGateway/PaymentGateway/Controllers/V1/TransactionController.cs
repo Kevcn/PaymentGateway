@@ -24,7 +24,7 @@ namespace PaymentGateway.Controllers.V1
         [HttpGet(ApiRoutes.Transaction.Get)]
         public async Task<IActionResult> Get([FromRoute] long transactionId)
         {
-            _logger.Information($"Received get transaction request for id {transactionId}");
+            _logger.Information("Received get transaction request for id {TransactionId}", transactionId);
             var transactionHistory = await _transactionService.GetTransactionHistoryById(transactionId);
 
             if (transactionHistory == null)

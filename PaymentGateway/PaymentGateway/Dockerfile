@@ -5,12 +5,12 @@ WORKDIR /app
 COPY *.csproj ./
 RUN dotnet restore
 
-# Copy everything else and build
+# Copy everything else and build 
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o outputDirectory
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=build-env /app/outputDirectory .
 ENTRYPOINT ["dotnet", "PaymentGateway.dll"]
